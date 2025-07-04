@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bystander Bites: Full Meal Edition</title>
+    <title>Bystander Intervention Interactive Tool</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -77,3 +77,436 @@
             padding-bottom: 20px;
             position: relative; /* For menu button positioning */
         }
+        /* Landing Page Specifics */
+        #landing-page h4 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 500; /* font-medium */
+            color: #4B5563; /* gray-700 */
+        }
+        #landing-page h1 {
+            font-size: 3rem; /* text-5xl */
+            font-weight: 700; /* font-bold */
+            color: #C69214; /* anu-gold */
+        }
+        #landing-page p {
+            font-size: 1.2rem;
+            color: #1A1A1A; /* ANU Black for text */
+            margin-bottom: 20px;
+        }
+        #landing-page .acknowledgement-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: #1A1A1A;
+            line-height: 1.6;
+            max-width: 90%;
+            margin-bottom: 30px;
+        }
+        .start-button {
+            background-color: #000000; /* ANU Black */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .start-button:hover {
+            background-color: #333333; /* Slightly lighter black */
+            transform: translateY(-2px);
+        }
+
+        /* Scenario Selection Page */
+        #scenario-selection-page h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1A1A1A; /* ANU Black */
+            margin-bottom: 30px;
+        }
+        .scenario-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 700px;
+        }
+        .scenario-select-button {
+            background-color: #C69214; /* ANU Gold */
+            color: white;
+            padding: 20px 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(198, 146, 20, 0.2);
+            border: none;
+            font-size: 1.05rem;
+            text-align: center;
+        }
+        .scenario-select-button:hover {
+            background-color: #A87E12; /* Darker ANU Gold */
+            transform: translateY(-2px);
+        }
+
+        /* Game Page Specifics */
+        #game-page .game-title {
+            font-size: 3rem; /* Larger title for the game page */
+            font-weight: 700;
+            color: #1A1A1A; /* ANU Black for text */
+            margin-bottom: 20px;
+        }
+
+        .scenario-box {
+            background-color: #F4F4F4; /* ANU Beige */
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #1A1A1A; /* ANU Black */
+            line-height: 1.6;
+            transition: background-color 0.5s ease; /* Smooth transition for color change */
+        }
+        .scenario-box.final-scenario {
+            background-color: #E0FFFF; /* Light Cyan for final step */
+        }
+        .scenario-box h3 { /* Style for the "Part X" heading */
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-bottom: 8px;
+        }
+
+        .consequence-box {
+            background-color: #C69214; /* ANU Gold for consequences */
+            color: white; /* White text for contrast */
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 16px; /* Adjusted margin */
+            text-align: left;
+            font-size: 1rem;
+            line-height: 1.5;
+            display: none;
+            border: 1px solid transparent; /* Default transparent border */
+            width: 100%; /* Ensure it takes full width */
+        }
+        .consequence-box.positive {
+            border-color: #000000; /* ANU Black */
+        }
+        .consequence-box.negative {
+            border-color: #DC2626; /* Red for negative */
+        }
+        /* Neutral has no special border */
+
+        .d-button {
+            background-color: #000000; /* ANU Black */
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: none;
+            flex-grow: 1;
+            min-width: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+        .d-button strong {
+            font-size: 1.05em;
+            margin-bottom: 2px;
+        }
+        .d-button span {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+        .d-button:hover {
+            background-color: #333333; /* Slightly lighter black */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .d-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .d-button.do-nothing {
+            background-color: #DC2626; /* Red for 'Do Nothing' */
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);
+        }
+        .d-button.do-nothing:hover {
+            background-color: #B91C1C; /* Darker Red */
+            box-shadow: 0 6px 15px rgba(220, 38, 38, 0.3);
+        }
+        .d-button:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            justify-content: center;
+            width: 100%; /* Ensure it takes full width */
+        }
+        @media (max-width: 768px) {
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .action-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            margin-top: 16px; /* Margin above action buttons */
+            width: 100%; /* Ensure it takes full width */
+        }
+        .llm-button {
+            background-color: #C69214; /* ANU Gold */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none;
+            margin-top: 10px;
+            display: none;
+        }
+        .llm-button:hover {
+            background-color: #A87E12; /* Darker ANU Gold */
+        }
+        .llm-button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .game-control-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            width: 100%; /* Ensure it takes full width */
+        }
+        .game-control-buttons button {
+            background-color: #000000; /* ANU Black */
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none;
+            flex-grow: 1;
+            min-width: 150px;
+        }
+        .game-control-buttons button:hover {
+            background-color: #333333; /* Darker black */
+        }
+        .game-control-buttons button.restart-scenario-button {
+            background-color: #DC2626; /* Red for restart */
+        }
+        .game-control-buttons button.restart-scenario-button:hover {
+            background-color: #B91C1C; /* Darker Red */
+        }
+        .game-control-buttons button.continue-button-gold {
+            background-color: #C69214; /* ANU Gold for continue */
+        }
+        .game-control-buttons button.continue-button-gold:hover {
+            background-color: #A87E12; /* Darker ANU Gold */
+        }
+
+        /* Menu Button */
+        .menu-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #000000; /* ANU Black */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none;
+            z-index: 50;
+        }
+        .menu-button:hover {
+            background-color: #333333; /* Darker ANU Black */
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .modal-content {
+            background-color: #FFFFFF; /* ANU White */
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            text-align: left;
+            color: #1A1A1A; /* ANU Black */
+            line-height: 1.6;
+        }
+        .modal-content h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1A1A1A; /* ANU Black */
+        }
+        .modal-content p {
+            margin-bottom: 10px;
+        }
+        .close-button {
+            color: #1A1A1A; /* ANU Black */
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .loading-spinner {
+            border: 4px solid #F4F4F4; /* ANU Beige */
+            border-top: 4px solid #000000; /* ANU Black */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .menu-list li {
+            margin-bottom: 10px;
+        }
+        .menu-list a {
+            color: #1A1A1A; /* ANU Black */
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        .menu-list a:hover {
+            color: #333333;
+        }
+        .menu-section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #1A1A1A; /* ANU Black */
+            border-bottom: 1px solid #F4F4F4; /* ANU Beige border */
+            padding-bottom: 5px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 640px) {
+            .screen-container {
+                padding: 20px;
+                gap: 12px;
+            }
+            #landing-page, #scenario-selection-page, #game-page {
+                min-height: 80vh; /* Adjust for smaller screens if 100vh is too much */
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+            .scenario-box {
+                font-size: 0.95rem;
+                padding: 16px;
+            }
+            .consequence-box {
+                font-size: 0.85rem;
+                padding: 16px;
+            }
+            .d-button {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+                min-width: unset;
+                width: 100%;
+            }
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-content {
+                padding: 20px;
+            }
+            .modal-content h3 {
+                font-size: 1.2rem;
+            }
+            .menu-button {
+                top: 10px;
+                left: 10px;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            .game-control-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .game-control-buttons button {
+                width: 100%;
+            }
+            #landing-page h4 { font-size: 1rem; }
+            #landing-page h1 { font-size: 2.2rem; }
+            #landing-page p { font-size: 0.9rem; }
+            #landing-page .acknowledgement-text { font-size: 0.8rem; }
+            #scenario-selection-page h2 { font-size: 1.3rem; }
+            .scenario-selection-grid {
+                grid-template-columns: 1fr;
+            }
+            .scenario-select-button {
+                padding: 12px 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
