@@ -63,7 +63,7 @@ var tutorial1_direct = new Outcome_Effect("You calmly but firmly interject, 'Mar
                                           "reinforcing respectful discussion. Mark's behaviour is challenged, and Priya " + 
                                           "feels seen and supported, improving the tutorial environment.",
                                           "positive",
-                                          this.combine = ["delegate", "delay", "document"]
+                                          this.combine = new Set(["delegate", "delay", "document"])
                                         )
 
                                      
@@ -75,7 +75,7 @@ var tutorial1_distract = new Outcome_Effect("You loudly 'realise' you've forgott
                                             "and the immediate tension dissipates. While the comment wasn't " + 
                                             "directly addressed, the situation was defused.",
                                             "neutral",
-                                            this.combine = ["delegate", "delay", "document"], 
+                                            this.combine = new Set(["delegate", "delay", "document"]), 
 
                                         )
                     
@@ -85,7 +85,7 @@ var tutorial1_delegate = new Outcome_Effect("After the tutorial, you discreetly 
                                             "and confirms they will follow up. This ensures the issue is handled by someone in " + 
                                             "authority, potentially leading to educational outcomes for Mark and systemic change.",
                                             "positive",
-                                            this.combine = ["direct", "distract", "delay", "document"],
+                                            this.combine = new Set (["direct", "distract", "delay", "document"])
                                         )
             
 // if delay and delegate together, combine? 
@@ -95,7 +95,7 @@ var tutorial1_delay = new Outcome_Effect("After the tutorial ends, you approach 
                                         "support services if she wants to report it. While the incident wasn't stopped, you provided " + 
                                         "crucial emotional support and a pathway for further action.",
                                         "positive",
-                                        this.combine = ["direct", "distract", "delegate", "document"]
+                                        this.combine = new Set(["direct", "distract", "delegate", "document"])
                                         )
 
 var tutorial1_document = new Outcome_Effect("You quickly open a note on your phone and jot down Mark's exact words, the time, " + 
@@ -104,7 +104,7 @@ var tutorial1_document = new Outcome_Effect("You quickly open a note on your pho
                                             "evidence that could be used if Priya or someone else decides to make a formal complaint " + 
                                             "to the university's equity office. However, the immediate impact on Priya remains.",
                                             "neutral",
-                                            this.combine ["direct", "distract", "delegate", "delay"]
+                                            this.combine = new Set (["direct", "distract", "delegate", "delay"])
                                         )
 
 var tutorial1_nothing = new Outcome_Effect("You remain silent, feeling uncomfortable but unsure what to do. The tutorial continues " + 
@@ -135,7 +135,8 @@ var tutorial1 = new Scenario("Tutorial",
                             tutorial1_outcomes
 )
 
-function inputChoice(scenario) { 
-    
+// user selects all their choices, and confirms 
+function inputChoice(scenario, input) { 
+    var choice_list = scenario.choices
 }
 
