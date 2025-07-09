@@ -231,6 +231,17 @@
             font-size: 0.8em;
             opacity: 0.9;
         }
+        .d-button select {
+            background-color: #C69214; /* Slightly lighter black */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .d-button cant-combine {
+            background-color: #9CA3AF; /* Slightly lighter black */
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
         .d-button:hover {
             background-color: #333333; /* Slightly lighter black */
             transform: translateY(-2px);
@@ -279,25 +290,6 @@
             margin-top: 16px; /* Margin above action buttons */
             width: 100%; /* Ensure it takes full width */
         }
-        .llm-button {
-            background-color: #C69214; /* ANU Gold */
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            border: none;
-            margin-top: 10px;
-            display: none;
-        }
-        .llm-button:hover {
-            background-color: #A87E12; /* Darker ANU Gold */
-        }
-        .llm-button:disabled {
-            background-color: #9ca3af;
-            cursor: not-allowed;
-        }
         .game-control-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -333,6 +325,11 @@
         .game-control-buttons button.continue-button-gold:hover {
             background-color: #A87E12; /* Darker ANU Gold */
         }
+
+        .game-control-buttons button.seeNextPart-button-gold {
+            background-color: #A87E12; /* Darker ANU Gold */
+        }
+
 
         /* Menu Button */
         .menu-button {
@@ -510,3 +507,537 @@
             }
         }
     </style>
+</head>
+<body>
+    <div class="screen-container">
+        <div id="landing-page">
+            <button id="menu-button-landing" class="menu-button">Menu</button>
+            <div id="top-of-page" class="flex flex-col items-center">
+                <h4 class="text-xl font-medium text-gray-700">Inclusive and Respectful Communities present</h4>
+                <h1 class="text-5xl font-bold text-anu-gold">A Bystander Intervention Tool</h1>
+            </div>
+            <p>Learn to make a difference in moments that matter.</p>
+            <p class="acknowledgement-text">"The Australian National University acknowledges, celebrates and pays our respects to the Ngunnawal and Ngambri people of the Canberra region and to all First Nations Australians on whose traditional lands we meet and work, and whose cultures are among the oldest continuing cultures in human history."</p>
+            <button id="start-game-button" class="start-button">Let's begin</button>
+        </div>
+
+        <div id="scenario-selection-page" class="hidden-screen">
+            <button id="menu-button-selection" class="menu-button">Menu</button>
+            <h2>Where would you like to start?</h2>
+            <div class="scenario-selection-grid">
+                <button class="scenario-select-button" data-start-scenario="tutorial_microaggression">Go to your tute</button>
+                <button class="scenario-select-button" data-start-scenario="res_hall_loud_music">Spend time in a Residential Hall</button>
+                <button class="scenario-select-button" data-start-scenario="club_meet_exclusion">Attend a Club Meet</button>
+                <button class="scenario-select-button" data-start-scenario="sports_team_exclusion">Play Sports</button>
+                <button class="scenario-select-button" data-start-scenario="coffee_shop_queue">Go get a Coffee</button>
+                <button class="scenario-select-button" data-start-scenario="bathroom_graffiti">Go to the Bathroom</button>
+            </div>
+        </div>
+
+        <div id="game-page" class="hidden-screen">
+            <button id="menu-button-game" class="menu-button">Menu</button>
+
+            <h1 id="game-page-title" class="game-title"></h1>
+
+            <div id="scenario-display" class="scenario-box">
+                <h3 id="scenario-part-number"></h3>
+                <p id="scenario-description"></p>
+            </div>
+
+            <div class="action-area">
+                <div class="button-grid" id="action-buttons">
+                    <button class="d-button" data-action="direct">
+                        <strong>Direct</strong>
+                        <span data-description-for="direct"></span>
+                    </button>
+                    <button class="d-button" data-action="distract">
+                        <strong>Distract</strong>
+                        <span data-description-for="distract"></span>
+                    </button>
+                    <button class="d-button" data-action="delegate">
+                        <strong>Delegate</strong>
+                        <span data-description-for="delegate"></span>
+                    </button>
+                    <button class="d-button" data-action="delay">
+                        <strong>Delay</strong>
+                        <span data-description-for="delay"></span>
+                    </button>
+                    <button class="d-button" data-action="document">
+                        <strong>Document</strong>
+                        <span data-description-for="document"></span>
+                    </button>
+                    <button class="d-button do-nothing" data-action="do-nothing">
+                        <strong>Do Nothing</strong>
+                        <span data-description-for="do-nothing"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="consequence-display" class="consequence-box">
+                </div>
+
+            <div class="game-control-buttons">
+                <button id="restart-scenario-button" class="restart-scenario-button" style="display: none;">Restart This Scenario</button>
+                <button id="continue-button" class="continue-button-gold" style="display: none;">See What Happens Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="menuModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" data-modal-target="menuModal">&times;</span>
+            <h3>Game Menu</h3>
+
+            <h4 class="menu-section-title">Navigation</h4>
+            <ul data-section="navigation" class="menu-list">
+                </ul>
+
+            <h4 class="menu-section-title">Choose Scenario</h4>
+            <ul id="scenario-list" class="menu-list">
+                </ul>
+
+            <h4 class="menu-section-title">Support & Reporting</h4>
+            <ul class="menu-list">
+                <li><a href="https://www.anu.edu.au/students/health-safety-wellbeing/student-support" target="_blank" rel="noopener noreferrer">ANU Student Support Services</a></li>
+                <li><a href="https://www.anu.edu.au/students/health-safety-wellbeing/counselling" target="_blank" rel="noopener noreferrer">ANU Counselling Centre</a></li>
+                <li><a href="https://www.anu.edu.au/about/governance/committees/equity-and-diversity-committee" target="_blank" rel="noopener noreferrer">ANU Equity & Diversity Office</a></li>
+                <li><a href="https://anu-advocate.symplicity.com/sash_report/index.php/pid715548?" target="_blank" rel="noopener noreferrer">Harmful Disclosure Tool</a></li>
+                <li><a href="https://www.lifeline.org.au/" target="_blank" rel="noopener noreferrer">Lifeline (Australia) - 13 11 14</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <audio id="hoverSound" src="https://assets.mixkit.co/sfx/preview/mixkit-game-bling-2000.mp3" preload="auto"></audio>
+    <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-software-interface-click-1869.mp3" preload="auto"></audio>
+
+    <script>
+        // Game state variables
+        let currentScenarioId = null;   // Start with no scenario loaded
+        let gameActive = false;         //
+        let lastChosenAction = null;    // To store the last action for reflection
+        let currentPartNumber = 0;      // Tracks the current part number within a scenario
+
+        // DOM Elements
+        const landingPage = document.getElementById('landing-page');
+        const scenarioSelectionPage = document.getElementbyId('scenario-selection-page');
+        const gamePage = document.getElementById('game-page');
+
+        const startGameButton = document.getElementById('start-game-button');
+        const scenarioSelectButtons = document.querySelectorAll('.scenario-select-button');
+
+        const gamePageTitle = document.getElementbyId('start-game-button');
+        const scenarioPartNumber = document.getElementById('scenario-part-number');         // Element for part number
+        const scenarioDescriptionDisplay = document.getElementById('scenario-description'); // Element for scenario description
+        const scenarioBox = document.getElementById('scenario-display');                    // Reference to the scenario box
+
+        const consequenceDisplay = document.getElementById('consequence-display');
+        const actionButtonsContainer = document.getElementById('action-buttons');
+        const buttons = actionButtonsContainer.querySelectorAll('.d-button');
+        const continueButton = document.getElementById('continue-button');
+        const restartScenarioButton = document.getElementById('restart-scenario-button');
+
+        // Menu elements
+        const menuButtonLanding = document.getElementById('menu-button-landing');
+        const menuButtonSelection = document.getElementById('menu-button-selection');
+        const menuButtonGame = document.getElementById('menu-button-game');
+        const menuModal = document.getElementById('menuModal');
+        const menuModalCloseButton = menuModal.querySelector('.close-button');
+        const scenarioList = document.getElementById('scenario-list');
+        const menuNavList = menuModal.querySelector('.menu-list[data-section="navigation"]'); // Get the navigation list
+
+        // Audio elements
+        const hoverSound = document.getElementById('hoverSound');
+        const clickSound = document.getElementById('clickSound');
+
+
+        var tutorial1 = {title:"Tutorial",
+                        description:"The 'Joke' in the Tutorial", 
+                        text: "During a lively tutorial discussion on Australian history, " + 
+                            "a student named Mark makes a 'joke' about a particular cultural group's intelligence, " +
+                            "implying they are less capable. Another student, Priya, who is from that cultural background, " +
+                            "visibly flinches and looks down, becoming quiet for the rest of the session. " + 
+                            "The tutor seems to ignore it, moving on quickly.",
+                        choices: {
+                            direct:  "Address Mark directly about his comment.",
+                            distract:"Shift the conversation away from Mark's comment.",
+                            delegate:"Speak to the tutor after the session.",
+                            delay:   "Check in with Priya after the tutorial.",
+                            document:"Make a disclosure using the Harmful Disclosure Tool.",
+                            nothing: "Remain silent and observe." 
+                        },
+                        consequences: { 
+                            direct: {
+                                text:"You calmly but firmly interject, 'Mark, that comment isn't appropriate " + 
+                                    "and it's based on a harmful stereotype. It makes the learning environment " + 
+                                    "uncomfortable for others.' Mark looks embarrassed and mumbles an apology. " + 
+                                    "Priya looks up, surprised and grateful. The tutor then addresses the class, " + 
+                                    "reinforcing respectful discussion. Mark's behaviour is challenged, and Priya " + 
+                                    "feels seen and supported, improving the tutorial environment.",
+                                type: "positive",
+                                combine: (["delegate", "delay", "document"]),
+                            },
+                            distract: {
+                                text: "You loudly 'realise' you've forgotten your textbook " + 
+                                    "and ask the tutor a complex, off-topic question about " + 
+                                    "the next week's reading, shifting the focus. The tutor " + 
+                                    "is momentarily sidetracked, and the conversation moves away " +
+                                    "from Mark's comment. Priya gets a moment to compose herself, " + 
+                                    "and the immediate tension dissipates. While the comment wasn't " + 
+                                    "directly addressed, the situation was defused.",
+                                type: "neutral",
+                                combine: (["delegate", "delay", "document"]), 
+                            },
+                            delegate: {
+                                text: "After the tutorial, you discreetly approach the tutor and explain what Mark " +
+                                    "said and how it affected Priya. You suggest the tutor address it with Mark or " + 
+                                    "the class. The tutor thanks you, acknowledging the importance of a safe space, " + 
+                                    "and confirms they will follow up. This ensures the issue is handled by someone in " + 
+                                    "authority, potentially leading to educational outcomes for Mark and systemic change.",
+                                    type: "positive",
+                                    combine:(["direct", "distract", "delay", "document"])
+                            },
+                            delay: { 
+                                text: "After the tutorial ends, you approach Priya and say, 'I'm so sorry about what Mark said. " + 
+                                    "That was completely out of line. Are you okay?' Priya expresses her frustration and hurt. " + 
+                                    "You listen empathetically, validate her feelings, and offer to walk her to the student " + 
+                                    "support services if she wants to report it. While the incident wasn't stopped, you provided " + 
+                                    "crucial emotional support and a pathway for further action.",
+                                type: "positive",
+                                combine: (["direct", "distract", "delegate", "document"])
+                            },
+                            document: { 
+                                text: "You quickly open a note on your phone and jot down Mark's exact words, the time, " + 
+                                    "date, and the context of the tutorial. You also note Priya's reaction and " + 
+                                    "the tutor's inaction. The incident plays out as you record. You now have detailed " + 
+                                    "evidence that could be used if Priya or someone else decides to make a formal complaint " + 
+                                    "to the university's equity office. However, the immediate impact on Priya remains.",
+                                type: "neutral",
+                                combine: (["direct", "distract", "delegate", "delay"])
+                            },
+                            nothing: {
+                                text: "You remain silent, feeling uncomfortable but unsure what to do. The tutorial continues " + 
+                                        "as if nothing happened. Priya remains withdrawn and quiet. Mark's behaviour goes " + 
+                                        "unchallenged, potentially reinforcing his belief that such comments are acceptable. " + 
+                                        "Priya feels isolated and unsupported, and the learning environment is subtly diminished " + 
+                                        "for students from diverse backgrounds.",
+                                type: "negative",
+                                combine: ([])
+                            }
+                        }
+        };
+        
+        // Function to show a specific screen and hide others, with scrolling
+        function showScreen(screenId) {
+            const screens = [landingPage, scenarioSelectionPage, gamePage];
+            screens.forEach(screen => {
+                screen.classList.add('hidden-screen'); // Hide all screens
+            });
+
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.remove('hidden-screen'); // Show the target screen
+                
+                // Scroll to the top of the target screen
+                targetScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Function to load a scenario
+        function loadScenario(scenarioId) {
+            const scenario = scenarios[scenarioId];
+            if (!scenario) {
+                console.error("Scenario not found:", scenarioId);
+                scenarioDescriptionDisplay.innerHTML = `<p>Error! Could not load the next part of the story. Please restart the game from the menu.</p>`;
+                return;
+            }
+
+            currentScenarioId = scenarioId;
+        // Set part number or "In the end..."
+            if (scenario.isEnding) {
+                scenarioPartNumber.textContent = "In the end...";
+                scenarioBox.classList.add('final-scenario'); // Add class for final scenario color
+                scenarioDescriptionDisplay.innerHTML = `<p>${scenario.description}</p>`; // No "What do you do?" for endings
+            } else {
+                // If it's a new scenario (initial load from selection or restart), set to 1.
+                // Otherwise, it means we're continuing, and currentPartNumber was already incremented.
+                if (currentPartNumber === 0) { // Only set to 1 if it's a fresh start
+                    currentPartNumber = 1;
+                }
+                scenarioPartNumber.textContent = `Part ${currentPartNumber}`;
+                scenarioBox.classList.remove('final-scenario'); // Remove class if not final
+                scenarioDescriptionDisplay.innerHTML = `<p>${scenario.description}</p><p>What do you do?</p>`; // Add "What do you do?"
+            }
+
+            gamePageTitle.textContent = scenario.title; // Set dynamic game page title
+
+            actionButtonsContainer.style.display = 'grid'; // Show action buttons
+            consequenceDisplay.style.display = 'none'; // Hide consequences
+            consequenceDisplay.className = 'consequence-box'; // Reset consequence box styling
+            enableButtons();
+            continueButton.style.display = 'none'; // Hide continue button
+            restartScenarioButton.style.display = 'none'; // Hide restart scenario button
+            gameActive = true;
+            analyzeScenarioButton.style.display = 'block'; // Show Analyze button
+            reflectOutcomeButton.style.display = 'none'; // Hide Reflect button
+
+            // Update button descriptions based on the current scenario
+            buttons.forEach(button => {
+                const action = button.dataset.action;
+                const descriptionSpan = button.querySelector(`span[data-description-for="${action}"]`);
+                if (descriptionSpan && scenario.buttonDescriptions[action]) {
+                    descriptionSpan.textContent = scenario.buttonDescriptions[action];
+                } else {
+                    descriptionSpan.textContent = getGenericDescription(action);
+                }
+            });
+
+            // If it's an ending scenario, disable buttons and show only "Play Again"
+            if (scenario.isEnding) {
+                displayConsequences('final'); // Display the final consequence
+                actionButtonsContainer.style.display = 'none'; // Hide action buttons for ending
+                disableButtons();
+                analyzeScenarioButton.style.display = 'none'; // Hide Analyze button at ending
+                reflectOutcomeButton.style.display = 'none'; // Hide Reflect button at ending
+                restartScenarioButton.style.display = 'none'; // No restart scenario at final ending
+                continueButton.textContent = 'Play Again';
+                continueButton.style.display = 'block';
+                gameActive = false;
+            }
+            showScreen('game-page'); // Ensure game page is visible and scrolled to
+        }
+
+        // Helper for generic descriptions if specific ones are missing
+        function getGenericDescription(action) {
+            switch (action) {
+                case 'direct': return "Address the situation directly.";
+                case 'distract': return "Create a diversion to interrupt.";
+                case 'delegate': return "Find someone in authority to help.";
+                case 'delay': return "Check in with the person after the event.";
+                case 'document': return "Make a disclosure using the Harmful Disclosure Tool.";
+                case 'do-nothing': return "Choose not to intervene."; // Corrected syntax
+                default: return "";
+            }
+        }
+
+        // Function to display consequences
+        function displayConsequences(action) {
+            const scenario = scenarios[currentScenarioId];
+            const chosenConsequence = scenario.consequences[action];
+
+            if (chosenConsequence) {
+                consequenceDisplay.innerHTML = `<p>${chosenConsequence.text}</p>`;
+                consequenceDisplay.style.display = 'block';
+                consequenceDisplay.classList.add(chosenConsequence.type);
+            }
+            actionButtonsContainer.style.display = 'none'; // Hide action buttons
+            disableButtons();
+            analyzeScenarioButton.style.display = 'none';
+            reflectOutcomeButton.style.display = 'block';
+            seeNextPartButton.textContent = 'See What Happens Next';
+            seeNextPartButton.style.display = 'block';
+            restartScenarioButton.style.display = 'block';
+            lastChosenAction = action;
+
+            if (scenario.isEnding) {
+                seeNextPartButton.textContent = 'Play Again';
+                reflectOutcomeButton.style.display = 'none';
+                restartScenarioButton.style.display = 'none';
+            }
+        }
+
+        // Function to enable all action buttons
+        function enableButtons() {
+            buttons.forEach(button => {
+                button.disabled = false;
+            });
+        }
+
+        // Function to disable all action buttons
+        function disableButtons() {
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+        }
+
+        // Function to reset the game (full restart from landing page)
+        function resetGame() {
+            currentScenarioId = null;
+            gameActive = false;
+            currentPartNumber = 0; // Reset part number
+            showScreen('landing-page');
+        }
+
+        // Menu Modal Logic
+        menuButtonLanding.addEventListener('click', () => {
+            menuModal.style.display = 'flex';
+            populateMenuNavigation(); // Populate navigation links
+            populateScenarioList(); // Populate scenario links
+        });
+        menuButtonSelection.addEventListener('click', () => {
+            menuModal.style.display = 'flex';
+            populateMenuNavigation(); // Populate navigation links
+            populateScenarioList(); // Populate scenario links
+        });
+        menuButtonGame.addEventListener('click', () => {
+            menuModal.style.display = 'flex';
+            populateMenuNavigation(); // Populate navigation links
+            populateScenarioList(); // Populate scenario links
+        });
+
+        menuModalCloseButton.addEventListener('click', () => {
+            menuModal.style.display = 'none';
+        });
+
+        function populateMenuNavigation() {
+            menuNavList.innerHTML = ''; // Clear existing navigation list
+
+            const homeItem = document.createElement('li');
+            const homeLink = document.createElement('a');
+            homeLink.href = '#top-of-page'; // Anchor link to the top of the landing page
+            homeLink.textContent = 'Home (Landing Page)';
+            homeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                menuModal.style.display = 'none';
+                showScreen('landing-page');
+                // Use smooth scroll to top of the page after showing it
+                document.getElementById('top-of-page').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            homeItem.appendChild(homeLink);
+            menuNavList.appendChild(homeItem);
+
+            const newGameItem = document.createElement('li');
+            const newGameLink = document.createElement('a');
+            newGameLink.href = '#';
+            newGameLink.textContent = 'Start New Game (Scenario Selection)';
+            newGameLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                menuModal.style.display = 'none';
+                showScreen('scenario-selection-page');
+            });
+            newGameItem.appendChild(newGameLink);
+            menuNavList.appendChild(newGameItem);
+        }
+
+        function populateScenarioList() {
+            scenarioList.innerHTML = ''; // Clear existing list
+            // Add all initial scenarios to the menu for starting points
+            const initialScenarioOptions = [
+                { id: 'tutorial_microaggression', text: 'Go to your tute' },
+                { id: 'res_hall_loud_music', text: 'Spend time in a Residential Hall' },
+                { id: 'club_meet_exclusion', text: 'Attend a Club Meet' },
+                { id: 'sports_team_exclusion', text: 'Play Sports' },
+                { id: 'coffee_shop_queue', text: 'Go get a Coffee' },
+                { id: 'bathroom_graffiti', text: 'Go to the Bathroom' }
+            ];
+        
+            initialScenarioOptions.forEach(option => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = '#';
+                link.textContent = option.text;
+                link.dataset.scenarioId = option.id;
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    menuModal.style.display = 'none';
+                    currentPartNumber = 0; // Reset part number for a new scenario start
+                    loadScenario(option.id); // Load selected scenario
+                });
+                listItem.appendChild(link);
+                scenarioList.appendChild(listItem);
+            });
+        }
+
+        // Buttons
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                hoverSound.currentTime = 0; // Rewind to start
+                hoverSound.play().catch(e => console.log("Hover audio play failed:", e)); // Play and catch potential errors
+            });
+            button.addEventListener('click', (event) => {
+                clickSound.currentTime = 0; // Rewind to start
+                clickSound.play().catch(e => console.log("Click audio play failed:", e)); // Play and catch potential errors
+
+                if (gameActive) {
+                    const action = event.target.closest('.d-button')?.dataset.action;
+                    if (action) {
+                        // displayConsequences(action);
+                        
+
+
+
+
+
+
+
+
+
+                    }
+                }
+            });
+        });
+
+        // Event listener for Start Game button
+        startGameButton.addEventListener('click', () => {
+            showScreen('scenario-selection-page');
+            populateScenarioList();                      // Ensure scenario list is populated for menu
+        });
+
+        // Event listeners for scenario selection buttons
+        scenarioSelectButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const scenarioId = event.target.dataset.startScenario;
+                currentPartNumber = 0; // Reset part number for a new scenario start
+                loadScenario(scenarioId);
+            });
+        });
+
+
+        // Event listener for continue/play again button
+        continueButton.addEventListener('click', () => {
+            const scenario = scenarios[currentScenarioId];
+            if (scenario.isEnding) {
+                showScreen('scenario-selection-page'); // Go to scenario selection page
+            } else {
+                if (lastChosenAction && scenario.consequences[lastChosenAction]?.nextScenarioId) {
+                    currentPartNumber++; // Increment part number for the next part of the scenario
+                    loadScenario(scenario.consequences[lastChosenAction].nextScenarioId);
+                } else {
+                    console.error("Next scenario ID not found. Restarting game.");
+                    showScreen('scenario-selection-page'); // Fallback to scenario selection
+                }
+            }
+        });
+
+        // Event listener for continue/play again button
+        seeNextPartButton.addEventListener('click', () => {
+            const scenario = scenarios[currentScenarioId];
+            if (scenario.isEnding) {
+                showScreen('scenario-selection-page'); // Go to scenario selection page
+            } else {
+                if (lastChosenAction && scenario.consequences[lastChosenAction]?.nextScenarioId) {
+                    currentPartNumber++; // Increment part number for the next part of the scenario
+                    loadScenario(scenario.consequences[lastChosenAction].nextScenarioId);
+                } else {
+                    console.error("Next scenario ID not found. Restarting game.");
+                    showScreen('scenario-selection-page'); // Fallback to scenario selection
+                }
+            }
+        });
+
+        // Event listener for restart scenario button
+        restartScenarioButton.addEventListener('click', () => {
+            const originalScenarioId = currentScenarioId; // Keep the current scenario ID
+            currentPartNumber = 0; // Reset part number to re-start the scenario from Part 1
+            loadScenario(originalScenarioId); // Reload the same scenario
+        });
+
+        // Initial game load: show landing page
+        window.onload = () => {
+            showScreen('landing-page');
+            // Ensure navigation links are populated on load for the menu
+            populateMenuNavigation();
+            populateScenarioList();
+        };
+    </script>
+</body>
+</html>
